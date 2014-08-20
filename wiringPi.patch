@@ -1,0 +1,153 @@
+diff -uNr wiringPi_orig/wiringPi/wiringPi.c wiringPi/wiringPi/wiringPi.c
+--- wiringPi_orig/wiringPi/wiringPi.c	2014-08-05 10:31:32.855286285 -0500
++++ wiringPi/wiringPi/wiringPi.c	2014-08-04 23:00:36.434502197 -0500
+@@ -259,6 +259,7 @@
+ // ISR Data
+ 
+ static void (*isrFunctions [64])(void) ;
++static void (*isrFunctionsWithArg [64])(void *) ;
+ 
+ 
+ // Doing it the Arduino way with lookup tables...
+@@ -1600,6 +1601,130 @@
+     while (pinPass != -1)
+       delay (1) ;
+   pthread_mutex_unlock (&pinMutex) ;
++
++  return 0 ;
++}
++
++
++/*
++ * interruptHandlerWithArg:
++ *	This is a thread and gets started to wait for the interrupt we're
++ *	hoping to catch. It will call the user-function when the interrupt
++ *	fires.
++ *********************************************************************************
++ */
++
++static void *interruptHandlerWithArg (void *arg)
++{
++  int myPin ;
++
++  (void)piHiPri (55) ;	// Only effective if we run as root
++
++  myPin   = pinPass ;
++  pinPass = -1 ;
++
++  for (;;)
++    if (waitForInterrupt (myPin, -1) > 0)
++      isrFunctionsWithArg [myPin] (arg) ;
++
++  return NULL ;
++}
++
++
++/*
++ * wiringPiISR:
++ *	Pi Specific.
++ *	Take the details and create an interrupt handler that will do a call-
++ *	back to the user supplied function.
++ *********************************************************************************
++ */
++
++int wiringPiISRWithArg (int pin, int mode, void (*function)(void *), void *arg)
++{
++  pthread_t threadId ;
++  const char *modeS ;
++  char fName   [64] ;
++  char  pinS [8] ;
++  pid_t pid ;
++  int   count, i ;
++  char  c ;
++  int   bcmGpioPin ;
++
++  if ((pin < 0) || (pin > 63))
++    return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: pin must be 0-63 (%d)\n", pin) ;
++
++  /**/ if (wiringPiMode == WPI_MODE_UNINITIALISED)
++    return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: wiringPi has not been initialised. Unable to continue.\n") ;
++  else if (wiringPiMode == WPI_MODE_PINS)
++    bcmGpioPin = pinToGpio [pin] ;
++  else if (wiringPiMode == WPI_MODE_PHYS)
++    bcmGpioPin = physToGpio [pin] ;
++  else
++    bcmGpioPin = pin ;
++
++// Now export the pin and set the right edge
++//	We're going to use the gpio program to do this, so it assumes
++//	a full installation of wiringPi. It's a bit 'clunky', but it
++//	is a way that will work when we're running in "Sys" mode, as
++//	a non-root user. (without sudo)
++
++  if (mode != INT_EDGE_SETUP)
++  {
++    /**/ if (mode == INT_EDGE_FALLING)
++      modeS = "falling" ;
++    else if (mode == INT_EDGE_RISING)
++      modeS = "rising" ;
++    else
++      modeS = "both" ;
++
++    sprintf (pinS, "%d", bcmGpioPin) ;
++
++    if ((pid = fork ()) < 0)	// Fail
++      return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: fork failed: %s\n", strerror (errno)) ;
++
++    if (pid == 0)	// Child, exec
++    {
++      /**/ if (access ("/usr/local/bin/gpio", X_OK) == 0)
++      {
++	execl ("/usr/local/bin/gpio", "gpio", "edge", pinS, modeS, (char *)NULL) ;
++	return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: execl failed: %s\n", strerror (errno)) ;
++      }
++      else if (access ("/usr/bin/gpio", X_OK) == 0)
++      {
++	execl ("/usr/bin/gpio", "gpio", "edge", pinS, modeS, (char *)NULL) ;
++	return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: execl failed: %s\n", strerror (errno)) ;
++      }
++      else
++	return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: Can't find gpio program\n") ;
++    }
++    else		// Parent, wait
++      wait (NULL) ;
++  }
++
++// Now pre-open the /sys/class node - but it may already be open if
++//	we are in Sys mode...
++
++  if (sysFds [bcmGpioPin] == -1)
++  {
++    sprintf (fName, "/sys/class/gpio/gpio%d/value", bcmGpioPin) ;
++    if ((sysFds [bcmGpioPin] = open (fName, O_RDWR)) < 0)
++      return wiringPiFailure (WPI_FATAL, "wiringPiISRWithArg: unable to open %s: %s\n", fName, strerror (errno)) ;
++  }
++
++// Clear any initial pending interrupt
++
++  ioctl (sysFds [bcmGpioPin], FIONREAD, &count) ;
++  for (i = 0 ; i < count ; ++i)
++    read (sysFds [bcmGpioPin], &c, 1) ;
++
++  isrFunctionsWithArg [pin] = function ;
++
++  pthread_mutex_lock (&pinMutex) ;
++    pinPass = pin ;
++    pthread_create (&threadId, NULL, interruptHandlerWithArg, arg) ;
++    while (pinPass != -1)
++      delay (1) ;
++  pthread_mutex_unlock (&pinMutex) ;
+ 
+   return 0 ;
+ }
+diff -uNr wiringPi_orig/wiringPi/wiringPi.h wiringPi/wiringPi/wiringPi.h
+--- wiringPi_orig/wiringPi/wiringPi.h	2014-08-05 10:31:32.855286285 -0500
++++ wiringPi/wiringPi/wiringPi.h	2014-08-04 21:46:02.928845077 -0500
+@@ -199,6 +199,7 @@
+ 
+ extern int  waitForInterrupt    (int pin, int mS) ;
+ extern int  wiringPiISR         (int pin, int mode, void (*function)(void)) ;
++extern int  wiringPiISRWithArg  (int pin, int mode, void (*function)(void *), void *arg) ;
+ 
+ // Threads
+ 

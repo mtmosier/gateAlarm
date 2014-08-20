@@ -1,0 +1,48 @@
+[General]
+User = gateAlarm
+Group = gateAlarm
+AdminEmail = me@example.com
+EmailLoginUser = example@gmail.com
+EmailLoginPassword = xxxxxxxxxxxxxxxx
+Debug = True
+
+[Alarm]
+DoorbellDebounceInSeconds = 1
+SensorGracePeriodInSeconds = 5
+SendGateClosedMessage = False
+
+[GoogleVoice]
+Username = example@gmail.com
+AppPass = xxxxxxxxxxxxxxxx
+ThrottleTimeInSeconds = 1
+RetryGracePeriodInMinutes = 720
+
+[Twilio]
+AccountSid = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+AuthToken = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+FromNumber = +11234567890
+
+[Pushover]
+Host = api.pushover.net:443
+UrlPath = /1/messages.json
+ApiToken = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+RetryGracePeriodInMinutes = 5
+DefaultTitle = MyTitle
+
+[Sensors]
+Front_Gate_1 = 4
+Front_Gate_2 = 17
+Front_Gate_3 = 21
+Side_Gate = 22
+
+[Doorbell]
+Front_Doorbell = 25
+
+[PhoneNumbers]
+John = +11234567890
+Jane = +11234567890
+Smith = +11234567890
+
+[PushNotificationUsers]
+John = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Henry = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
