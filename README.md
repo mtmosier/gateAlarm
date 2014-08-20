@@ -29,12 +29,16 @@ Installation
 
 Basic installation is simply:
 
+```
 cd gateAlarm
 python3 setup.py install
+```
 
 That gets you the library installed.  Next you want to copy gateAlarm.conf.example to /etc/gateAlarm.conf and edit it with the settings appropriate for your installation.  In the system directory are the files I use to make it start at boot.  Copy system/gateAlarm to /etc/init.d/gateAlarm and system/startGateAlarm.py to /usr/local/sbin/startGateAlarm.py.  Make sure both are executable, then from a command line run
 
+```
 update-rc.d gateAlarm defaults
+```
 
 
 Copyright Information
