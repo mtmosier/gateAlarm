@@ -21,7 +21,7 @@ You must install WiringPi2 and WiringPi2-Python separately.  Please note I inclu
 Hardware
 ========
 
-The hardware setup is really nothing but pulldown resistors and contact switches (and optionally the doorbell).  Check the file schematic.jpg if you want to see what I used.
+The hardware setup is really nothing but pulldown resistors and contact switches (and optionally the doorbell).  Check the [schematic](schematic.png) if you want to see what I used.
 
 
 Installation
