@@ -15,7 +15,7 @@ For google voice support I used the google voice lib found at https://github.com
 Prerequisites
 =============
 
-You must install WiringPi2 and WiringPi2-Python separately.  Please note I included patches for both.  Download the source for each, apply the patch (cd into the directory and do patch -p1 < /path/to/patch/wiringPi.patch, then normal build instructions) for each.  The patches are to allow callbacks with arguments.  I used wiringPi instead of RPi.GPIO because, last I checked, I could not drop root priveldages with RPi.GPIO and still make use of it.  WiringPi allows dropping root privledges after setup.
+You must install WiringPi2 and WiringPi2-Python separately.  Please note I included patches for both.  Download the source for each, apply the patch (cd into the directory and do patch -p1 < /path/to/patch/wiringPi.patch, then normal build instructions) for each.  The patches are to allow callbacks with arguments.  I used wiringPi instead of RPi.GPIO because, last I checked, I could not drop root privileges with RPi.GPIO and still make use of it.  WiringPi allows dropping root privileges after setup.
 
 
 Hardware
