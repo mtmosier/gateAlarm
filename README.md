@@ -9,7 +9,7 @@ History
 
 We often have problems with our gates being left open by accident.  When that happens our pitbull likes to go exploring the neighborhood.  To fix the problem I set up a raspberry pi with simple contact switches to detect a gate left open and message my phone to let me know.  Since we also lacked a doorbell, I went ahead and added support for that as well.
 
-For google voice support I used the google voice lib found at https://github.com/korylprince/pygvoicelib.  I updated it for use with python 3 and included it with the library.  I should note that google voice appears to limit the messages I can send to a very small amount, so I added twilio support as a backup (used when google voice fails).  I also added support for pushover to do push messages and avoid sms altogether.  Each of these three is optional.  Omit the sections for the ones you do not want to use from the config file in order to disable them.
+For google voice support I used the google voice lib found at https://github.com/korylprince/pygvoicelib.  I updated it for use with python 3 and included it in this library.  I should note that google voice appears to limit the messages I can send to a very small amount, so I added twilio support as a backup (used when google voice fails).  I also added support for pushover to do push messages and avoid sms altogether.  Each of these three is optional.  Omit the sections for the ones you do not want to use from the config file in order to disable them.
 
 
 Prerequisites
@@ -24,8 +24,8 @@ Hardware
 The hardware setup is really nothing but pulldown resistors and contact switches (and optionally the doorbell).  Check the file schematic.jpg if you want to see what I used.
 
 
-Installing
-==========
+Installation
+============
 
 Basic installation is simply:
 
@@ -42,7 +42,7 @@ Copyright Information
 
 All code contained is licensed as GPLv3.
 
-The pygvoicelib code is Copyright 2010, TELTUB Inc, author Ehsan Foroughi. This code is licensed as GPLv3.
+The pygvoicelib code is Copyright 2010, TELTUB Inc, author Ehsan Foroughi.
 
 The pygvoicelib.py was modified by Kory Prince (korylprince at gmail dot com) and Michael T. Mosier.  All other code is Copyright 2014, Michael T. Mosier (mtmosier at gmail dot com).
 
