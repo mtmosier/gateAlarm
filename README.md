@@ -17,6 +17,11 @@ Prerequisites
 
 You must install WiringPi2 and WiringPi2-Python separately.  Please note I included patches for both.  Download the source for each, apply the patch (cd into the directory and do patch -p1 < /path/to/patch/wiringPi.patch, then normal build instructions) for each.  The patches are to allow callbacks with arguments.  I used wiringPi instead of RPi.GPIO because, last I checked, I could not drop root privileges with RPi.GPIO and still make use of it.  WiringPi allows dropping root privileges after setup.
 
+Alternatively, you can pull each from my own forks of the projects, which already have the patches applied.  Please note that they may not be completely up to date with changes in the parent projects.
+
+https://github.com/mtmosier/wiringPi
+https://github.com/mtmosier/WiringPi2-Python
+
 
 Hardware
 ========
