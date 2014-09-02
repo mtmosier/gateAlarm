@@ -33,7 +33,7 @@ class PushMessage:
 	def exit(self):
 		pass
 
-	def sendMessage(self, userID, message, title = None, priority = None):
+	def sendMessage(self, userID, message, title = None, priority = None, retry = 60, expire = 600):
 		messageSent = False
 
 		if self._apiToken is not None:
@@ -53,6 +53,9 @@ class PushMessage:
 					params["title"] = title
 				if priority is not None:
 					params["priority"] = priority
+					if priority == 2:
+						params["retry"] = retry
+						params["expire"] = expire
 
 				conn = http.client.HTTPSConnection(self._host)
 				conn.request("POST", self._urlPath, urllib.parse.urlencode(params), { "Content-type": "application/x-www-form-urlencoded" })

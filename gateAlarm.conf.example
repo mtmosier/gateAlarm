@@ -8,7 +8,8 @@ Debug = True
 
 [Alarm]
 DoorbellDebounceInSeconds = 1
-SensorGracePeriodInSeconds = 5
+SensorGracePeriodInSeconds = 20
+SensorLongGracePeriodInSeconds = 300
 SendGateClosedMessage = False
 
 [GoogleVoice]

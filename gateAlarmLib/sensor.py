@@ -14,6 +14,7 @@ class Sensor:
 	_triggerOnHigh = None
 	_name = None
 	_timeMarker = None
+	_timeMarker2 = None
 
 	def __init__(self, name, pinToWatch, triggerOnHigh = True):
 		self._watchPin = pinToWatch
@@ -50,6 +51,12 @@ class Sensor:
 
 	def getTimeMarker(self):
 		return self._timeMarker
+
+	def setTimeMarker2(self, timeMarker2):
+		self._timeMarker2 = timeMarker2
+
+	def getTimeMarker2(self):
+		return self._timeMarker2
 
 	def getName(self):
 		return self._name

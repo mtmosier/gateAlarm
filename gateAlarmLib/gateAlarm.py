@@ -25,6 +25,7 @@ class GateAlarm:
 	_smsObj = None
 	_pushMessageObj = None
 	_sensorTriggerGracePeriodTimedelta = None
+	_sensorTriggerLongPeriodTimedelta = None
 	_sendGateClosedMessage = False
 	_debug = False
 
@@ -98,6 +99,9 @@ class GateAlarm:
 		else:
 			self._sensorTriggerGracePeriodTimedelta = timedelta(seconds=0)
 
+		if 'SensorLongGracePeriodInSeconds' in config['Alarm']:
+			self._sensorTriggerLongPeriodTimedelta = timedelta(seconds=float(config['Alarm']['SensorLongGracePeriodInSeconds']))
+
 		if 'SendGateClosedMessage' in config['Alarm']:
 			self._sendGateClosedMessage = config['Alarm'].getboolean('SendGateClosedMessage')
 
@@ -143,9 +147,20 @@ class GateAlarm:
 					if self._debug:
 						print("message sent saying " + sensorObj.getName() + " is open")
 
+			if self._sensorTriggerLongPeriodTimedelta is not None and triggerEndedTime < (datetime.today() - self._sensorTriggerLongPeriodTimedelta):
+				if triggerEndedTime != sensorObj.getTimeMarker2():
+					sensorObj.setTimeMarker2(triggerEndedTime)
+					for userID in self._pushNotificationList:
+						self._pushMessageObj.sendMessage(userID, sensorObj.getName() + ' is still open', None, 2)
+					for phoneNumber in self._phoneNumberList:
+						self._smsObj.sendSms(phoneNumber, sensorObj.getName() + ' is still open')
+					if self._debug:
+						print("message sent saying " + sensorObj.getName() + " is still open")
+
 		else:
 			if sensorObj.getTimeMarker() is not None:
 					sensorObj.setTimeMarker(None)
+					sensorObj.setTimeMarker2(None)
 					if self._sendGateClosedMessage:
 						for userID in self._pushNotificationList:
 							self._pushMessageObj.sendMessage(userID, sensorObj.getName() + ' is now closed')
