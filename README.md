@@ -27,7 +27,7 @@ https://github.com/mtmosier/WiringPi2-Python
 Hardware
 ========
 
-The hardware setup is really nothing but pulldown resistors and contact switches (and optionally the doorbell).  Check the [schematic](schematic.png) if you want to see what I used.
+The hardware setup is really nothing but pulldown resistors and contact switches (and optionally the doorbell).  Check the [schematic](schematic.png) or [fritzing](fritzing.png) file if you want to see what I used.
 
 
 Installation
