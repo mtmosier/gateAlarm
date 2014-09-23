@@ -47,6 +47,12 @@ update-rc.d gateAlarm defaults
 ```
 
 
+Further Information
+===================
+
+Pictures and description can be found at [mtmosier.com](http://mtmosier.com/9-uncategorised/74-gatealarm).
+
+
 Copyright Information
 =====================
 
