@@ -19,9 +19,14 @@ You must install WiringPi2 and WiringPi2-Python separately.  Please note I inclu
 
 Alternatively, you can pull each from my own forks of the projects, which already have the patches applied.  Please note that they may not be completely up to date with changes in the parent projects.
 
+twilio-python is used to for twilio integration, if you're using it.  It's completely optional.  Google Voice and Pushover support is included already with this library.
+
 https://github.com/mtmosier/wiringPi
 
 https://github.com/mtmosier/WiringPi2-Python
+
+https://github.com/twilio/twilio-python (Optional)
+
 
 
 Hardware
